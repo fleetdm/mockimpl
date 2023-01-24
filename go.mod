@@ -1,4 +1,4 @@
-module github.com/groob/mockimpl
+module github.com/fleetdm/mockimpl
 
 go 1.19
 
