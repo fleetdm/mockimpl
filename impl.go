@@ -381,7 +381,8 @@ func main() {
 	}
 
 	var buf bytes.Buffer
-	fmt.Fprintf(&buf, packageStr)
+	fmt.Fprint(&buf, packageStr)
+	fmt.Fprintf(&buf, "import \"%s\"\n\n", path)
 	fmt.Fprintf(&buf, "var _ %s.%s = (*%s)(nil)\n\n", filepath.Base(path), ifaceID, name)
 	fmt.Fprint(&buf, string(src2))
 	buf.WriteString("\n")
