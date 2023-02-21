@@ -272,7 +272,9 @@ func funcs(iface string) ([]Func, error) {
 const stub = "func ({{.Recv}}) {{.Name}}" +
 	"({{range .Params}}{{.Name}} {{.Type}}, {{end}})" +
 	"({{range .Res}}{{.Name}} {{.Type}}, {{end}})" +
-	"{\n" + "{{.RecvShort}}.{{.Name}}FuncInvoked = true" + "\n" +
+	"{\n" + "{{.RecvShort}}.mu.Lock()" + "\n" +
+	"{{.RecvShort}}.{{.Name}}FuncInvoked = true" + "\n" +
+	"{{.RecvShort}}.mu.Unlock()" + "\n" +
 	"return {{.RecvShort}}.{{.Name}}Func({{range .Params}}{{.CalledArgument}}, {{end}})" +
 	"\n" + "}\n\n"
 
@@ -329,6 +331,8 @@ func genStr(name string, fns []Func) []byte {
 		meth := Struc{IName: name, Func: fn}
 		tmplStr.Execute(&buf, meth)
 	}
+	buf.WriteString("\n")
+	buf.WriteString("mu sync.Mutex")
 	buf.WriteString("\n")
 	buf.WriteString("}")
 
